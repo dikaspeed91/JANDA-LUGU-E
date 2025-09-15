@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JANDA LUGU E - Pesan Lumpia</title>
+  <style>
+    :root {
+      --primary: #6B21A8;
+      --secondary: #8B5CF6;
+      --bg: #f9f9f9;
+      --card-bg: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      background-size: 200% 200%;
+      animation: gradientMove 6s ease infinite;
+      color: #222;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    header {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 16px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .container { max-width: 700px; margin: 20px auto; padding: 16px; }
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .product-card img {
+      width: 100%;
+      max-width: 350px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .price {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 10px 0;
+    }
+    .form-group { margin: 12px 0; text-align: left; }
+    label { font-weight: 600; display: block; margin-bottom: 4px; color: #333; }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      transition: 0.3s ease;
+      margin-top: 8px;
+    }
+    .btn:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+    .preview-container {
+      display: none;
+      margin-top: 16px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    .preview-container img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #eee;
+      margin: 20px 0;
+    }
+    /* Daun Jatuh */
+    .leaf {
+      position: fixed;
+      top: -40px;
+      font-size: 24px;
+      animation: fall linear forwards;
+      z-index: 999;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🍠 JANDA LUGU E — Lumpia Ubi Ungu Keju Lumer</header>
+  
+  <div class="container">
+    <div class="product-card">
+      <img src="real.png" alt="Lumpia Ubi Ungu">
+      <h2>Lumpia Ubi Ungu Keju Lumer</h2>
+      <p>Renyah di luar, lumer di dalam. Varian rasa: Keju, Coklat, Stroberi.</p>
+      <p class="price">💰 Rp 15.000 / pcs</p>
+    </div>
+
+    <div class="product-card">
+      <h3>Pesan Sekarang</h3>
+      <div class="form-group">
+        <label for="variant">Pilih Varian</label>
+        <select id="variant">
+          <option value="Lumpia Keju">Lumpia Keju</option>
+          <option value="Lumpia Coklat">Lumpia Coklat</option>
+          <option value="Lumpia Stroberi">Lumpia Stroberi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="qty">Jumlah Pesanan</label>
+        <input type="number" id="qty" min="1" value="1">
+      </div>
+      <button class="btn" onclick="pesanViaWA()">Lanjutkan ke WhatsApp</button>
+      <button class="btn" onclick="bukaKamera()">📷 Ambil Foto Bukti Transfer</button>
+
+      <!-- Preview Foto -->
+      <div class="preview-container" id="previewContainer">
+        <h4>📷 Foto Anda</h4>
+        <img id="previewImage" src="" alt="Preview Foto">
+        <button class="btn" onclick="kirimFotoWA()">Kirim via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2025 JANDA LUGU E | Pemesanan langsung via WhatsApp</footer>
+
+  <script>
+    let fotoData = null;
+
+    function pesanViaWA() {
+      const variant = document.getElementById('variant').value;
+      const qty = parseInt(document.getElementById('qty').value);
+      if (qty < 1) { alert("Jumlah pesanan minimal 1"); return; }
+      const total = qty * 15000;
+      
+      const pesan = 
+        `Halo! Saya ingin memesan:%0A` +
+        `Varian: ${variant}%0A` +
+        `Jumlah: ${qty}%0A` +
+        `Total: Rp ${total.toLocaleString()}%0A` +
+        `%0AMohon konfirmasi ketersediaan stok.`;
+      
+      window.open(`https://wa.me/6282266374285?text=${pesan}`, "_blank");
+      animasiDaun();
+    }
+
+    function bukaKamera() {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+      input.capture = "environment";
+      input.onchange = function(event) {
+        if (event.target.files.length > 0) {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            fotoData = e.target.result;
+            document.getElementById("previewImage").src = fotoData;
+            document.getElementById("previewContainer").style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
+    }
+
+    function kirimFotoWA() {
+      alert("Foto siap dikirim! Anda akan diarahkan ke WhatsApp.");
+      window.open("https://wa.me/6282266374285?text=Halo%2C%20saya%20kirim%20bukti%20transfer%20terlampir.", "_blank");
+    }
+
+    function animasiDaun() {
+      for (let i = 0; i < 15; i++) {
+        const daun = document.createElement("div");
+        daun.classList.add("leaf");
+        daun.innerHTML = "🍂";
+        daun.style.left = Math.random() * window.innerWidth + "px";
+        daun.style.animationDuration = (Math.random() * 3 + 3) + "s";
+        daun.style.fontSize = (Math.random() * 12 + 20) + "px";
+        document.body.appendChild(daun);
+        setTimeout(() => daun.remove(), 5000);
+      }
+    }
+  </script>
+</body>
+</html>
